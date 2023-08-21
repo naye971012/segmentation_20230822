@@ -51,8 +51,8 @@ def compute_miou(pred, true_labels, num_classes=26):
             
             iou_per_class = (intersection + epsilon) / (union + epsilon)
             
-            iou_per_batch += iou_per_class
-            iou_list[c] += iou_per_class
+            iou_per_batch += iou_per_class.cpu()
+            iou_list[c] += iou_per_class.cpu()
             
         iou_list[num_classes] += (iou_per_batch/num_classes)
 

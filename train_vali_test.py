@@ -17,7 +17,7 @@ def train(config, model, logger, train_dataloader, vali_dataloader):
     for epoch in range(config['EPOCH']):  # 10 에폭 동안 학습합니다.
         model.train()
         epoch_loss = 0
-        iou_list = torch.zeros(config['DATASET']['NUM_CLASSES']+1).to(device) #각 class별 IOU
+        iou_list = torch.zeros(config['DATASET']['NUM_CLASSES']+1) #각 class별 IOU
         for i, (images, masks) in tqdm(enumerate(train_dataloader), total=len(train_dataloader)):
             
             images = images.to(torch.float)  
