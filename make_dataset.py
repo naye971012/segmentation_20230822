@@ -98,11 +98,12 @@ def change_json2label(json_path,json_files, idx):
   for cur_info in temp['Annotation']:
     assert cur_info['Type']=='polygon'
 
-    cur_class = name2num[cur_info['Label']]
-    if(cur_class==99): #skip unknown
-      continue
-
     try: #오류 있으면 다음꺼로 스킵
+        cur_class = name2num[cur_info['Label']]
+        if(cur_class==99): #skip unknown
+            continue
+
+    
         cur_polygon = cur_info['Coordinate']
         cur_polygon = np.array(cur_polygon)
         cur_polygon = cur_polygon.reshape(-1,2)
