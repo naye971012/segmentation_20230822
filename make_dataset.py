@@ -102,7 +102,7 @@ def change_json2label(json_path,json_files, idx):
     if(cur_class==99): #skip unknown
       continue
     
-    if cur_info not in name2num.keys(): #오류 있으면 
+    if cur_info not in name2num.keys: #오류 있으면 
         continue
     #    change_json2label(json_path,json_files,random.randint( 0, len(json_files)-1 )) #오류 있을 경우 다시 뽑음.
 
