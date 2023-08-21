@@ -32,7 +32,7 @@ class CrossEntropy(nn.Module):
             score = F.interpolate(input=score, size=( #여기서 크기 조정하네
                 h, w), mode='bilinear', align_corners=True)
 
-        loss = -target * torch.log(torch.sigmoid(score)) - (1 - target) * torch.log(1 - torch.sigmoid(score))
+        loss = -target * torch.log(torch.sigmoid(score) + 1e-8 ) - (1 - target) * torch.log(1 - torch.sigmoid(score) + 1e-8)
         loss = loss.mean()
 
         return loss
