@@ -18,7 +18,7 @@ def train(config, model, logger, train_dataloader, vali_dataloader):
         model.train()
         epoch_loss = 0
         iou_list = torch.zeros(config['DATASET']['NUM_CLASSES']+1) #각 class별 IOU
-        for i, (images, masks) in tqdm(enumerate(train_dataloader)):
+        for i, (images, masks) in tqdm(enumerate(train_dataloader), total=len(train_dataloader)):
             images = images.to(device)
             masks = masks.to(device)
 

@@ -17,7 +17,8 @@ vali_image_files = sorted([f for f in os.listdir(vali_image_path) if f.endswith(
 
 
 if __name__=="__main__":
-    logger = SummaryWriter()
+    logdir= 'runs'
+    logger = SummaryWriter(log_dir=logdir)
     
     yaml_file_path = "/content/segmentation_20230822/train_configs.yaml"
     with open(yaml_file_path, 'r') as yaml_file:
