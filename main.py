@@ -38,7 +38,7 @@ if __name__=="__main__":
     
     
     print("make dataset...")
-    train_dataset = Segmentation2D(vali_json_path,vali_image_path,vali_json_files,vali_image_files, transform=test_transform, is_test=False)
+    train_dataset = Segmentation2D(vali_json_path,vali_image_path,vali_json_files,vali_image_files, transform=train_transform, is_test=False)
     vali_dataset = Segmentation2D(vali_json_path,vali_image_path,vali_json_files,vali_image_files, transform=test_transform, is_test=False)
     test_dataset = Segmentation2D(vali_json_path,vali_image_path,vali_json_files,vali_image_files, transform=test_transform, is_test=False)
     
