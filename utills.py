@@ -113,7 +113,7 @@ def draw_image(pred,mask, is_validation, idx ):
 
         # 클래스별로 이미지 생성
         colored_image = np.zeros((1080, 1920, 3), dtype=np.uint8)
-        for c in torch.argsort(class_pixel_counts)[::-1]:  # 가장 많이 등장한 순서대로 순회
+        for c in np.argsort(class_pixel_counts)[::-1]:  # 가장 많이 등장한 순서대로 순회
             class_mask = (class_labels == c)
             class_color = class_colors[c]
             colored_image[class_mask] = class_color
