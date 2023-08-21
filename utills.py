@@ -50,13 +50,3 @@ def compute_miou(pred, true_labels, num_classes=26):
 
     mean_iou_list = iou_list / pred_labels.shape[0]
     return mean_iou_list
-
-# 가상의 예측 레이블과 실제 레이블 생성
-batch_size = 4
-num_classes = 26
-pred_labels = torch.randint(0, 2, size=(batch_size, num_classes, 1024, 1024))
-true_labels = torch.randint(0, 2, size=(batch_size, num_classes, 1024, 1024))
-
-# MIOU 계산
-miou = compute_miou(pred_labels, true_labels, num_classes)
-print(miou)

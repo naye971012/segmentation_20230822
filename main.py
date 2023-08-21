@@ -19,7 +19,7 @@ vali_image_files = sorted([f for f in os.listdir(vali_image_path) if f.endswith(
 if __name__=="__main__":
     logger = SummaryWriter()
     
-    yaml_file_path = "seg_hrnet_ocr_CUSTOM/train_configs.yaml"
+    yaml_file_path = "./train_configs.yaml"
     with open(yaml_file_path, 'r') as yaml_file:
         config = yaml.safe_load(yaml_file)
 
