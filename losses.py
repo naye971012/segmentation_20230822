@@ -25,7 +25,8 @@ class CrossEntropy(nn.Module):
 
     def _forward(self, score, target):
         ph, pw = score.size(2), score.size(3)
-        h, w = target.size(1), target.size(2)
+        #h, w = target.size(1), target.size(2)
+        h, w = target.size(2), target.size(3)
         if ph != h or pw != w:
             score = F.interpolate(input=score, size=( #여기서 크기 조정하네
                 h, w), mode='bilinear', align_corners=True)
