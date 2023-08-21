@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
 import random
+from torch.nn import functional as F
 
 def seed_everything(config):
     random.seed(0)
@@ -24,6 +25,13 @@ def compute_miou(pred, true_labels, num_classes=26):
     Returns:
         _type_: _description_
     """
+    ph, pw = pred.size(2), pred.size(3)
+    h, w = true_labels.size(2), true_labels.size(3)
+    if ph != h or pw != w:
+        pred = F.interpolate(input=pred, size=( #여기서 크기 조정하네
+                h, w), mode='bilinear', align_corners=True)
+    
+    
     pred_labels = (pred > 0.5).to(torch.int)
     true_labels = true_labels.to(torch.int)
     
