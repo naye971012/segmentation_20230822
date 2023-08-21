@@ -43,7 +43,7 @@ def train(config, model, logger, train_dataloader, vali_dataloader):
                 logger.add_scalar('train loss step', epoch_loss/i , epoch * len(train_dataloader) + i )
                 
                 denom = torch.full((config['DATASET']['NUM_CLASSES']+1,), i) - iou_perfect_list # union==0 && intersec==0 은 계산에서 제외
-                logger.add_scalar('train mIOU step', iou_list[config['DATASET']['NUM_CLASSES']]/denom , epoch * len(train_dataloader) + i )
+                logger.add_scalar('train mIOU step', iou_list[config['DATASET']['NUM_CLASSES']]/torch.sum(denom) , epoch * len(train_dataloader) + i )
                 for j in range(config['DATASET']['NUM_CLASSES']):
                     logger.add_scalar(f'train IOU class {j} step', iou_list[j]/denom[j] , epoch * len(train_dataloader) + i )
         
@@ -56,7 +56,7 @@ def train(config, model, logger, train_dataloader, vali_dataloader):
         logger.add_scalar('train loss total', epoch_loss/len(train_dataloader) , epoch )
         
         denom = torch.full((config['DATASET']['NUM_CLASSES']+1,), len(train_dataloader)) - iou_perfect_list # union==0 && intersec==0 은 계산에서 제외
-        logger.add_scalar('train mIOU total', iou_list[config['DATASET']['NUM_CLASSES']]/denom , epoch )
+        logger.add_scalar('train mIOU total', iou_list[config['DATASET']['NUM_CLASSES']]/torch.sum(denom) , epoch )
         for j in range(config['DATASET']['NUM_CLASSES']):
             logger.add_scalar(f'train IOU class {j} total', iou_list[j]/denom[j] , epoch )
 
