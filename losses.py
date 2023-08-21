@@ -35,10 +35,8 @@ class CrossEntropy(nn.Module):
 
         if NUM_OUTPUTS == 1:
             score = [score]
-
-        print(score)
         
-        weights = [0,4 , 1.0 ]
+        weights = [0.4 , 1.0 ]
         assert len(weights) == len(score)
 
         return sum([w * self._forward(x, target) for (w, x) in zip(weights, score)]) # [ 0.4 , 1 ] [a , b], 뒤에거가 진짜 pred, 앞에는 형체예측
