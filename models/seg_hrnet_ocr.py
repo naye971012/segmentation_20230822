@@ -648,7 +648,7 @@ class HighResolutionNet(nn.Module):
         return out_aux_seg
 
     def init_weights(self, pretrained='',):
-        logger.info('=> init weights from normal distribution')
+        #logger.info('=> init weights from normal distribution')
         for name, m in self.named_modules():
             if any(part in name for part in {'cls', 'aux', 'ocr'}):
                 # print('skipped', name)
@@ -678,6 +678,6 @@ class HighResolutionNet(nn.Module):
 
 def get_seg_model(cfg, **kwargs):
     model = HighResolutionNet(cfg, **kwargs)
-    #model.init_weights(cfg.MODEL.PRETRAINED)
+    model.init_weights(cfg)
 
     return model
