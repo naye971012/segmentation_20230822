@@ -127,6 +127,6 @@ def draw_image(pred,mask, is_validation, idx ):
         else:
             prefix = "train_"
         if i==0:
-            plt.savefig(f'{prefix}pred_visualization_{idx}.png')  # 이미지 저장
-        else:
             plt.savefig(f'{prefix}label_visualization_{idx}.png')  # 이미지 저장
+        else:
+            plt.savefig(f'{prefix}pred_visualization_{idx}.png')  # 이미지 저장
