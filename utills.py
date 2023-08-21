@@ -96,7 +96,7 @@ def compute_miou(pred, true_labels, num_classes=26, idx=-1, is_validation=False)
 
 
 def draw_image(pred,mask, is_validation, idx ):
-    for i, mask_tensor in enumerate([pred,mask]):
+    for i, mask_tensor in enumerate([mask,pred]):
 
         # 클래스별로 이미지 시각화 및 저장
         mask_tensor = mask_tensor[0]
@@ -107,9 +107,13 @@ def draw_image(pred,mask, is_validation, idx ):
         # 가상의 클래스마다 0부터 25까지의 숫자로 구성된 이미지 생성 (예시)
         class_labels = img
 
+        # 클래스별로 픽셀 수 계산, label일 경우에만 실행하여 같은 색으로
+        if(i==0):
+            class_pixel_counts = [np.sum(class_labels == c) for c in range(26)]
+
         # 클래스별로 이미지 생성
         colored_image = np.zeros((1080, 1920, 3), dtype=np.uint8)
-        for c in range(26):
+        for c in np.argsort(class_pixel_counts)[::-1]:  # 가장 많이 등장한 순서대로 순회
             class_mask = (class_labels == c)
             class_color = class_colors[c]
             colored_image[class_mask] = class_color
