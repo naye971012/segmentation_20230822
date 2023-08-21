@@ -30,7 +30,7 @@ def train(config, model, logger, train_dataloader, vali_dataloader):
 
             iou_list += compute_miou(outputs[1],masks)
             epoch_loss += loss.item()
-            if(i%50==49):
+            if(i%50==5):
                 logger.add_scalar('train loss step', epoch_loss/i , epoch * len(train_dataloader) + i )
                 logger.add_scalar('train mIOU step', iou_list[config['DATASET']['NUM_CLASSES']]/i , epoch * len(train_dataloader) + i )
                 for j in range(config['DATASET']['NUM_CLASSES']):
