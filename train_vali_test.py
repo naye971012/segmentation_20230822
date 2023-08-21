@@ -33,7 +33,7 @@ def train(config, model, logger, train_dataloader, vali_dataloader):
             loss.backward()
             optimizer.step()
 
-            iou_list += compute_miou(outputs[1],masks)
+            iou_list += compute_miou(outputs[1],masks, idx=i, is_validation=False)
             epoch_loss += loss.item()
             if(i%10==5):
                 logger.add_scalar('train loss step', epoch_loss/i , epoch * len(train_dataloader) + i )
@@ -72,7 +72,7 @@ def vali(config,model, logger, vali_dataloader,epoch):
             outputs = model(images)
             loss = criterion(outputs, masks)
 
-            iou_list += compute_miou(outputs[1],masks)
+            iou_list += compute_miou(outputs[1],masks, idx=i, is_validation=True)
             epoch_loss += loss.item()
         
         

@@ -3,6 +3,38 @@ import torch
 import torch.backends.cudnn as cudnn
 import random
 from torch.nn import functional as F
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 클래스별 색상 매핑 (예: 26개 클래스에 대한 색상)
+class_colors = [
+    [0, 0, 255],    # 클래스 0의 색상 (파랑)
+    [255, 0, 0],    # 클래스 1의 색상 (빨강)
+    [0, 255, 0],    # 클래스 2의 색상 (녹색)
+    [255, 255, 0],  # 클래스 3의 색상 (노랑)
+    [0, 255, 255],  # 클래스 4의 색상 (하늘색)
+    [255, 0, 255],  # 클래스 5의 색상 (분홍색)
+    [128, 0, 0],    # 클래스 6의 색상 (짙은 빨강)
+    [0, 128, 0],    # 클래스 7의 색상 (짙은 녹색)
+    [0, 0, 128],    # 클래스 8의 색상 (짙은 파랑)
+    [128, 128, 0],  # 클래스 9의 색상 (올리브)
+    [128, 0, 128],  # 클래스 10의 색상 (자주색)
+    [0, 128, 128],  # 클래스 11의 색상 (청록색)
+    [192, 192, 192],  # 클래스 12의 색상 (은색)
+    [128, 128, 128],  # 클래스 13의 색상 (회색)
+    [0, 0, 0],      # 클래스 14의 색상 (검정)
+    [255, 255, 255],  # 클래스 15의 색상 (흰색)
+    [165, 42, 42],   # 클래스 16의 색상 (갈색)
+    [255, 140, 0],   # 클래스 17의 색상 (주황)
+    [255, 215, 0],   # 클래스 18의 색상 (금색)
+    [218, 112, 214],  # 클래스 19의 색상 (보라)
+    [0, 255, 0],     # 클래스 20의 색상 (라임색)
+    [0, 0, 139],     # 클래스 21의 색상 (어두운 파랑)
+    [0, 128, 0],     # 클래스 22의 색상 (녹색)
+    [70, 130, 180],  # 클래스 23의 색상 (스카이 블루)
+    [102, 205, 170],  # 클래스 24의 색상 (민트 크림)
+    [176, 224, 230],  # 클래스 25의 색상 (파우더 블루)
+]
 
 def seed_everything(config):
     random.seed(0)
@@ -13,7 +45,7 @@ def seed_everything(config):
     print("seed set to 0")
     
 
-def compute_miou(pred, true_labels, num_classes=26):
+def compute_miou(pred, true_labels, num_classes=26, idx=-1, is_validation=False):
     """
     전체 IOU list는 26번째에, 각 index마다 각각 class의 IOU
 
@@ -34,6 +66,9 @@ def compute_miou(pred, true_labels, num_classes=26):
     
     pred_labels = (pred > 0.5).to(torch.int)
     true_labels = true_labels.to(torch.int)
+    
+    if(idx%50==49):
+        draw_image(pred_labels,true_labels, is_validation, idx)
     
     mean_iou_list =0.0
     epsilon = 1e-6  # 분모가 0이 되는 것을 방지하기 위한 작은 값
@@ -58,3 +93,37 @@ def compute_miou(pred, true_labels, num_classes=26):
 
     mean_iou_list = iou_list / pred_labels.shape[0]
     return mean_iou_list
+
+
+def draw_image(pred,mask, is_validation, idx ):
+    for i, mask_tensor in enumerate([pred,mask]):
+        mask_tensor = torch.randint(0, 2, (1, 26, 1080, 1920))
+
+        # 클래스별로 이미지 시각화 및 저장
+        mask_tensor = mask_tensor[0]
+        img = torch.zeros((1080,1920))
+        for c in range(26):
+            img[mask_tensor[c]==1] = c
+
+        # 가상의 클래스마다 0부터 25까지의 숫자로 구성된 이미지 생성 (예시)
+        class_labels = img
+
+        # 클래스별로 이미지 생성
+        colored_image = np.zeros((1080, 1920, 3), dtype=np.uint8)
+        for c in range(26):
+            class_mask = (class_labels == c)
+            class_color = class_colors[c]
+            colored_image[class_mask] = class_color
+
+        # 이미지 시각화
+        plt.imshow(colored_image)
+        plt.axis('off')
+        
+        if is_validation:
+            prefix = "vali_"
+        else:
+            prefix = "train_"
+        if i==0:
+            plt.savefig(f'{prefix}pred_visualization_{idx}.png')  # 이미지 저장
+        else:
+            plt.savefig(f'{prefix}label_visualization_{idx}.png')  # 이미지 저장
