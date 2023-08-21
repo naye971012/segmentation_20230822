@@ -19,8 +19,6 @@ class CrossEntropy(nn.Module):
         
         self.criterion = None
         
-        self.alpha = 10
-        self.gamma = 2
         #self.criterion = nn.CrossEntropyLoss(
         #    weight=weight,
         #    ignore_index=ignore_label
@@ -37,9 +35,12 @@ class CrossEntropy(nn.Module):
             target = F.interpolate(target, size=(ph, pw), mode='bilinear', align_corners=True)
 
         ce_loss = -target * torch.log(torch.sigmoid(score) + 1e-8 ) - (1 - target) * torch.log(1 - torch.sigmoid(score) + 1e-8)
-        pt = torch.exp(-ce_loss)  # 예측의 확률 값
-        focal_loss = self.alpha * (1 - pt) ** self.gamma * ce_loss  # Focal Loss 계산
-        loss = focal_loss.mean()
+        
+        weight = torch.ones_like(ce_loss)
+        weight[:,0,:,:]*=0.1
+        weight[:,21,:,:]*=0.1
+        
+        loss = (ce_loss * weight) .mean()
 
         return loss
 
