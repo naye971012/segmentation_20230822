@@ -67,7 +67,7 @@ def compute_miou(pred, true_labels, num_classes=26, idx=-1, is_validation=False)
     pred_labels = (pred > 0.5).to(torch.int)
     true_labels = true_labels.to(torch.int)
     
-    if(idx%50==49):
+    if(idx%50==0):
         draw_image(pred_labels,true_labels, is_validation, idx)
     
     mean_iou_list =0.0
