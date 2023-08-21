@@ -37,8 +37,6 @@ class CrossEntropy(nn.Module):
         ce_loss = -target * torch.log(torch.sigmoid(score) + 1e-8 ) - (1 - target) * torch.log(1 - torch.sigmoid(score) + 1e-8)
         
         weight = torch.ones_like(ce_loss)
-        weight[:,0,:,:]*=0.1
-        weight[:,21,:,:]*=0.1
         
         loss = (ce_loss * weight) .mean()
 
