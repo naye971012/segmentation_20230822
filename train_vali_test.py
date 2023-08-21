@@ -52,8 +52,37 @@ def train(config, model, logger, train_dataloader, vali_dataloader):
         for j in range(config['DATASET']['NUM_CLASSES']):
             logger.add_scalar(f'train IOU class {j} total', iou_list[j]/len(train_dataloader) , epoch )
 
-def vali():
-    pass
+        vali(config, model, logger, vali_dataloader,epoch)
+
+def vali(config,model, logger, vali_dataloader,epoch):
+
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        criterion = CrossEntropy()
+        
+        epoch_loss = 0.0
+        iou_list = torch.zeros(config['DATASET']['NUM_CLASSES']+1) #각 class별 IOU
+        for i, (images, masks) in tqdm(enumerate(vali_dataloader), total=len(vali_dataloader)):
+            
+            images = images.to(torch.float)  
+            masks = masks.to(torch.long)  
+            
+            images = images.to(device)
+            masks = masks.to(device)
+            
+            outputs = model(images)
+            loss = criterion(outputs, masks)
+
+            iou_list += compute_miou(outputs[1],masks)
+            epoch_loss += loss.item()
+        
+        
+        print("loss: ", epoch_loss/len(vali_dataloader) , epoch)
+        logger.add_scalar('vali loss total', epoch_loss/len(vali_dataloader) , epoch )
+        logger.add_scalar('vali mIOU total', iou_list[config['DATASET']['NUM_CLASSES']]/len(vali_dataloader) , epoch )
+        for j in range(config['DATASET']['NUM_CLASSES']):
+            logger.add_scalar(f'vali IOU class {j} total', iou_list[j]/len(vali_dataloader) , epoch )
+        
+        return
 
 def test():
     pass
