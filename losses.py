@@ -19,8 +19,8 @@ class CrossEntropy(nn.Module):
         
         self.criterion = None
         
-        self.alpha = 2
-        self.gamma = 10
+        self.alpha = 10
+        self.gamma = 2
         #self.criterion = nn.CrossEntropyLoss(
         #    weight=weight,
         #    ignore_index=ignore_label
