@@ -31,8 +31,9 @@ class CrossEntropy(nn.Module):
         #h, w = target.size(1), target.size(2)
         h, w = target.size(2), target.size(3)
         if ph != h or pw != w:
-            score = F.interpolate(input=score, size=( #여기서 크기 조정하네
-                h, w), mode='bilinear', align_corners=True)
+            #score = F.interpolate(input=score, size=( #메모리 초과로 target를 바꾸기로
+            #    h, w), mode='bilinear', align_corners=True)
+            target = F.interpolate(target, size=(ph, pw), mode='bilinear', align_corners=True)
 
         ce_loss = -target * torch.log(torch.sigmoid(score) + 1e-8 ) - (1 - target) * torch.log(1 - torch.sigmoid(score) + 1e-8)
         pt = torch.exp(-ce_loss)  # 예측의 확률 값
