@@ -36,6 +36,8 @@ class CrossEntropy(nn.Module):
         if NUM_OUTPUTS == 1:
             score = [score]
 
+        print(score)
+        
         weights = [0,4 , 1.0 ]
         assert len(weights) == len(score)
 
