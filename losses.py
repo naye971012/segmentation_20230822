@@ -31,6 +31,9 @@ class CrossEntropy(nn.Module):
             score = F.interpolate(input=score, size=( #여기서 크기 조정하네
                 h, w), mode='bilinear', align_corners=True)
 
+        print(score)
+        print(target)
+        print(score.size(),target.size())
         loss = self.criterion(score, target)
 
         return loss
