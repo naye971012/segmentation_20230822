@@ -14,6 +14,7 @@ NUM_OUTPUTS = 2
 def customBCE(input,target):
     loss = -target * torch.log(torch.sigmoid(input)) - (1 - target) * torch.log(1 - torch.sigmoid(input))
     loss = loss.mean()
+    return loss
 
 class CrossEntropy(nn.Module):
     def __init__(self, ignore_label=-1, weight=None):
@@ -35,10 +36,8 @@ class CrossEntropy(nn.Module):
             score = F.interpolate(input=score, size=( #여기서 크기 조정하네
                 h, w), mode='bilinear', align_corners=True)
 
-        print(score)
-        print(target)
-        print(score.size(),target.size())
         loss = customBCE(score, target)
+        print(loss)
 
         return loss
 
