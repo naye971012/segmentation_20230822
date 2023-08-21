@@ -97,7 +97,6 @@ def compute_miou(pred, true_labels, num_classes=26, idx=-1, is_validation=False)
 
 def draw_image(pred,mask, is_validation, idx ):
     for i, mask_tensor in enumerate([pred,mask]):
-        mask_tensor = torch.randint(0, 2, (1, 26, 1080, 1920))
 
         # 클래스별로 이미지 시각화 및 저장
         mask_tensor = mask_tensor[0]
