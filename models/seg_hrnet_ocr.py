@@ -469,8 +469,8 @@ class HighResolutionNet(nn.Module):
             self.stage4_cfg, num_channels, multi_scale_output=True)
 
         last_inp_channels = np.int32(np.sum(pre_stage_channels))
-        ocr_mid_channels = 256#config['MODEL']['OCR.MID_CHANNELS']
-        ocr_key_channels = 512#config['MODEL']['OCR.KEY_CHANNELS']
+        ocr_mid_channels = 512#config['MODEL']['OCR.MID_CHANNELS']
+        ocr_key_channels = 256#config['MODEL']['OCR.KEY_CHANNELS']
 
         self.conv3x3_ocr = nn.Sequential(
             nn.Conv2d(last_inp_channels, ocr_mid_channels,
