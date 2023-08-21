@@ -98,64 +98,6 @@ def compute_miou(pred, true_labels, num_classes=26, idx=-1, is_validation=False)
 
 
 
-
-def compute_miou(pred, true_labels, num_classes=26, idx=-1, is_validation=False):
-    """
-    전체 IOU list는 26번째에, 각 index마다 각각 class의 IOU
-
-    Args:
-        pred_labels (_type_): _description_
-        true_labels (_type_): _description_
-        num_classes (int, optional): _description_. Defaults to 26.
-
-    Returns:
-        _type_: _description_
-    """
-    ph, pw = pred.size(2), pred.size(3)
-    h, w = true_labels.size(2), true_labels.size(3)
-    if ph != h or pw != w:
-        pred = F.interpolate(input=pred, size=( #여기서 크기 조정하네
-                h, w), mode='bilinear', align_corners=True)
-    
-    
-    pred_labels = (pred > 0.5).to(torch.int)
-    true_labels = true_labels.to(torch.int)
-    
-    if(idx%50==0):
-        draw_image(pred_labels,true_labels, is_validation, idx)
-    
-    mean_iou_list =0.0
-    epsilon = 1e-6  # 분모가 0이 되는 것을 방지하기 위한 작은 값
-
-    iou_list = torch.zeros(num_classes+1) #각 class별 IOU
-    iou_perfect_list = torch.zeros(num_classes+1) #각 class별 IOU 맞출 것이 없는 상태에서 아무 표시도 없는 경우(정답인 경우) 회수
-    
-    for batch in range(pred_labels.shape[0]):
-        iou_per_batch = 0.0
-        for c in range(num_classes):  
-            true_mask = true_labels[batch][c]
-            pred_mask = pred_labels[batch][c]
-            
-            intersection = torch.logical_and(true_mask, pred_mask).sum()
-            union = torch.logical_or(true_mask, pred_mask).sum()
-            
-            iou_per_class = (intersection + epsilon) / (union + epsilon)
-            
-            if(true_mask.sum()!=0 and intersection==0 ): #맞출 것이 없는 상태에서 아무 표시도 없는 경우(정답인 경우)
-                iou_perfect_list[c]+=1
-                iou_perfect_list[num_classes]+=1
-            else:
-                iou_per_batch+=iou_per_class.cpu()
-                iou_list[c]+=iou_per_class.cpu()
-                
-        iou_list[num_classes] += iou_per_batch
-
-    mean_iou_list = iou_list / pred_labels.shape[0]
-    
-    return mean_iou_list, iou_perfect_list
-
-
-
 def draw_image(pred,mask, is_validation, idx ):
     for i, mask_tensor in enumerate([mask,pred]):
 
