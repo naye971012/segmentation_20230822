@@ -57,7 +57,7 @@ class CrossEntropy(nn.Module):
         #    weight=weight,
         #    ignore_index=ignore_label
         #)
-        self.weight = (weight**2).to('cuda') #weight 차이 더 크게
+        self.weight = weight.to('cuda') #weight 차이 더 크게
         self.pos_weight = 5
         
     def _forward(self, score, target):
