@@ -18,6 +18,7 @@ def train(config, model, logger, train_dataloader, vali_dataloader, weight):
         model.train()
         epoch_loss = 0
         iou_list = torch.zeros(config['DATASET']['NUM_CLASSES']+1) #각 class별 IOU
+        perfect_list = torch.zeros(config['DATASET']['NUM_CLASSES']+1) # 없는걸 없다고 맞춘 개수 (분모 나누기에서 제외)
         for i, (images, masks) in tqdm(enumerate(train_dataloader), total=len(train_dataloader)):
             
             images = images.to(torch.float)  
@@ -33,13 +34,20 @@ def train(config, model, logger, train_dataloader, vali_dataloader, weight):
             loss.backward()
             optimizer.step()
 
-            iou_list += compute_miou(outputs[1],masks, idx=i, is_validation=False)
+            iou_list_temp , perfect_list_temp = compute_miou(outputs[1],masks, idx=i, is_validation=False)
+            iou_list += iou_list_temp
+            perfect_list += perfect_list_temp
+            
             epoch_loss += loss.item()
             if(i%10==5):
                 logger.add_scalar('train loss step', epoch_loss/i , epoch * len(train_dataloader) + i )
                 logger.add_scalar('train mIOU step', iou_list[config['DATASET']['NUM_CLASSES']]/i , epoch * len(train_dataloader) + i )
                 for j in range(config['DATASET']['NUM_CLASSES']):
-                    logger.add_scalar(f'train IOU class {j} step', iou_list[j]/i , epoch * len(train_dataloader) + i )
+                    if i==perfect_list[j]:
+                        cur_iou = 1
+                    else:
+                        cur_iou = iou_list[j]/(i-perfect_list[j])
+                    logger.add_scalar(f'train IOU class {j} step', cur_iou , epoch * len(train_dataloader) + i )
         
         scheduler.step()
         

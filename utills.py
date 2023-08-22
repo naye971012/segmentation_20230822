@@ -75,6 +75,7 @@ def compute_miou(pred, true_labels, num_classes=26, idx=-1, is_validation=False)
     epsilon = 1e-6  # 분모가 0이 되는 것을 방지하기 위한 작은 값
 
     iou_list = torch.zeros(num_classes+1) #각 class별 IOU
+    perfect_list = torch.zeros(num_classes+1) #각 class별 IOU
     
     for batch in range(pred_labels.shape[0]):
         iou_per_batch = 0.0
@@ -87,18 +88,24 @@ def compute_miou(pred, true_labels, num_classes=26, idx=-1, is_validation=False)
             
             iou_per_class = (intersection + epsilon) / (union + epsilon)
             
-            if(intersection!=0):
+            if(true_mask.sum()==0 and pred_mask.sum()==0): #없는 상황에서 예측 잘 하면
+                perfect_list[num_classes]+=1
+                perfect_list[c]+=1 # 이들은 mIOU 계산에서 제외 (추후 나눌 때 이들 개수만큼 빼서 나눔 제외)
+            else:
                 iou_per_batch += iou_per_class.cpu()
                 iou_list[c] += iou_per_class.cpu()
                 
                 
-        iou_list[num_classes] += (iou_per_batch/num_classes)
+        iou_list[num_classes] += (iou_per_batch/(num_classes - perfect_list[num_classes]))  #마지막 index (num_class) = 평균 iou
+    perfect_list[num_classes] = 0 #바로 윗 줄에서 계산 완료했으므로 다시 사용 안되도록 0으로 바꿈
 
-    mean_iou_list = iou_list / pred_labels.shape[0]
-    return mean_iou_list
+    return iou_list , perfect_list
 
 
-
+CLASS_INDEX = [22, 23, 24, 25, 1, 20, 26, 6, 10, 2, 3, 4, 5, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21]
+for _ in range(26):
+    CLASS_INDEX[_]-=1
+    
 def draw_image(pred,mask, is_validation, idx ):
     for i, mask_tensor in enumerate([mask,pred]):
 
@@ -112,12 +119,13 @@ def draw_image(pred,mask, is_validation, idx ):
         class_labels = img
 
         # 클래스별로 픽셀 수 계산, label일 경우에만 실행하여 같은 색으로
-        if i==0:
-            class_pixel_counts = [torch.sum(class_labels == c) for c in range(26)]
-
+        #if i==0:
+        #    class_pixel_counts = [torch.sum(class_labels == c) for c in range(26)]
+        #np.argsort(class_pixel_counts)[::-1]
+        
         # 클래스별로 이미지 생성
         colored_image = np.zeros((1080, 1920, 3), dtype=np.uint8)
-        for color, c in enumerate(np.argsort(class_pixel_counts)[::-1]):  # 가장 많이 등장한 순서대로 순회
+        for color, c in enumerate(CLASS_INDEX):  # 가장 많이 등장한 순서대로 순회
             class_mask = (class_labels == c)
             class_color = class_colors[color]
             colored_image[class_mask] = class_color
