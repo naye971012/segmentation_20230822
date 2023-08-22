@@ -16,8 +16,8 @@ class DiceLoss(nn.Module):
         super(DiceLoss, self).__init__()
         self.ignore_label = ignore_label
         
-        if weight:
-            self.weight = weight.to('cuda')
+        #if weight:
+        #    self.weight = weight.to('cuda')
 
         
     def _forward(self, score, target):
