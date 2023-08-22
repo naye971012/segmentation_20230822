@@ -136,7 +136,7 @@ if __name__=="__main__":
     
     #Encoder = 'timm-resnest101e' #denset201
     Weights = 'imagenet'
-    Encoder = 'timm-regnetx_002'
+    Encoder = 'resnet18'
 
     prep_fun = smp.encoders.get_preprocessing_fn(
         Encoder,
