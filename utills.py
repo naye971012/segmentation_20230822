@@ -112,7 +112,8 @@ def draw_image(pred,mask, is_validation, idx ):
         class_labels = img
 
         # 클래스별로 픽셀 수 계산, label일 경우에만 실행하여 같은 색으로
-        class_pixel_counts = [torch.sum(class_labels == c) for c in range(26)]
+        if i==0:
+            class_pixel_counts = [torch.sum(class_labels == c) for c in range(26)]
 
         # 클래스별로 이미지 생성
         colored_image = np.zeros((1080, 1920, 3), dtype=np.uint8)
