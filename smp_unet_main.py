@@ -159,11 +159,16 @@ if __name__=="__main__":
     y = model(x)
     print("model testing done!\n")
     
+    temp_transform = A.Compose([
+        A.Resize(544, 960),
+        A.Normalize(),
+        ToTensorV2()
+    ])
     
     print("make dataset...")
-    train_dataset = Segmentation2D(vali_json_path,vali_image_path,vali_json_files,vali_image_files, transform=train_transform, is_test=False)
-    vali_dataset = Segmentation2D(vali_json_path,vali_image_path,vali_json_files,vali_image_files, transform=test_transform, is_test=False)
-    test_dataset = Segmentation2D(vali_json_path,vali_image_path,vali_json_files,vali_image_files, transform=test_transform, is_test=False)
+    train_dataset = Segmentation2D(vali_json_path,vali_image_path,vali_json_files,vali_image_files, transform=temp_transform, is_test=False)
+    vali_dataset = Segmentation2D(vali_json_path,vali_image_path,vali_json_files,vali_image_files, transform=temp_transform, is_test=False)
+    test_dataset = Segmentation2D(vali_json_path,vali_image_path,vali_json_files,vali_image_files, transform=temp_transform, is_test=False)
     
     train_dataloader = DataLoader(vali_dataset, batch_size= config['BATCH_SIZE'] , shuffle=True, num_workers=2)
     vali_dataloader = DataLoader(vali_dataset, batch_size= config['BATCH_SIZE'], shuffle=False, num_workers=2)
