@@ -23,7 +23,8 @@ class CrossEntropy(nn.Module):
         #    weight=weight,
         #    ignore_index=ignore_label
         #)
-        self.pos_weight = 10
+        self.weight = weight.to('cuda')
+        self.pos_weight = 1
         
     def _forward(self, score, target):
         ph, pw = score.size(2), score.size(3)
@@ -37,9 +38,7 @@ class CrossEntropy(nn.Module):
 
         ce_loss = - self.pos_weight * target * torch.log(torch.sigmoid(score) + 1e-8 ) - (1 - target) * torch.log(1 - torch.sigmoid(score) + 1e-8)
         
-        weight = torch.ones_like(ce_loss)
-        #weight[:,0,:,:]=0.1
-        #weight[:,21,:,:]=0.1
+        weight = self.weight.view( 1, self.weight.size(0), 1, 1)
         
         loss = (ce_loss * weight) .mean()
 

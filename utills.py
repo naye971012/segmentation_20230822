@@ -133,3 +133,21 @@ def draw_image(pred,mask, is_validation, idx ):
             plt.savefig(f'{prefix}label_visualization_{idx}.png')  # 이미지 저장
         else:
             plt.savefig(f'{prefix}pred_visualization_{idx}.png')  # 이미지 저장
+
+def calculate_weight(train_dataset):
+    """
+    data 5000개 분포 확인하여 class별 weight설정
+
+    Args:
+        train_dataset (_type_): _description_
+    """
+    class_pixel_counts = torch.zeros(26)
+    for i in range(5000):
+        _ , label = train_dataset[i]
+        class_pixel_counts += torch.tensor([torch.sum(label[c]) for c in range(26)]) #각 class별 개수
+        #10000 100 500 6000
+    class_pixel_counts = 1 - class_pixel_counts/torch.sum(class_pixel_counts)
+    
+    print(f"class weights : {class_pixel_counts}")
+    
+    return class_pixel_counts

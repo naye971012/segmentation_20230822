@@ -5,7 +5,7 @@ import os
 from make_dataset import Segmentation2D
 from transforms import *
 from torch.utils.data import DataLoader
-from utills import seed_everything
+from utills import seed_everything, calculate_weight
 from train_vali_test import *
 
 from torch.utils.tensorboard import SummaryWriter
@@ -57,9 +57,14 @@ if __name__=="__main__":
     test_dataset[1]
     print("done!\n")
     
+    
+    print("calculate class weight...")
+    weight = calculate_weight(train_dataset)
+    print("done!")
+    
     torch.cuda.empty_cache()
     print("train start!\n\n")
-    train(config,model,logger, train_dataloader,vali_dataloader)
+    train(config,model,logger, train_dataloader,vali_dataloader,weight)
     
     
     

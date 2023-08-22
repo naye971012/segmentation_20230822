@@ -2,11 +2,11 @@ from losses import *
 from tqdm import tqdm
 from utills import compute_miou
 
-def train(config, model, logger, train_dataloader, vali_dataloader):
+def train(config, model, logger, train_dataloader, vali_dataloader, weight):
     
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
-    criterion = CrossEntropy()
+    criterion = CrossEntropy(weight=weight)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=optimizer,
                                         lr_lambda=lambda epoch: 0.9 ** epoch,
@@ -52,12 +52,12 @@ def train(config, model, logger, train_dataloader, vali_dataloader):
         for j in range(config['DATASET']['NUM_CLASSES']):
             logger.add_scalar(f'train IOU class {j} total', iou_list[j]/len(train_dataloader) , epoch )
 
-        vali(config, model, logger, vali_dataloader,epoch)
+        vali(config, model, logger, vali_dataloader,epoch,weight)
 
-def vali(config,model, logger, vali_dataloader,epoch):
+def vali(config,model, logger, vali_dataloader,epoch,weight):
 
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        criterion = CrossEntropy()
+        criterion = CrossEntropy(weight=weight)
         
         epoch_loss = 0.0
         iou_list = torch.zeros(config['DATASET']['NUM_CLASSES']+1) #각 class별 IOU
