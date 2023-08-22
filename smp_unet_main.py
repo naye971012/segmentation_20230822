@@ -136,18 +136,18 @@ if __name__=="__main__":
     
     #Encoder = 'timm-resnest101e' #denset201
     Weights = 'imagenet'
-    Encoder = 'timm-res2next50'
+    Encoder = 'densenet121'
 
     prep_fun = smp.encoders.get_preprocessing_fn(
         Encoder,
         Weights
     )
 
-    model = smp.MAnet(
+    model = smp.Unet(
         encoder_name = Encoder,
         encoder_weights = Weights,
         in_channels = 3,
-        classes = 1,
+        classes = 26,
         activation = None
     )
     
