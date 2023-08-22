@@ -131,12 +131,15 @@ def draw_image(pred,mask, is_validation, idx ):
         if i==0:
             name = f'{prefix}label_visualization_{idx}'
             plt.savefig(f'{name}.png')  # 이미지 저장
+            plt.close()
             save_each_class(class_labels,name)
         else:
             name = f'{prefix}pred_visualization_{idx}'
             plt.savefig(f'{name}.png')  # 이미지 저장
+            plt.close()
             save_each_class(class_labels,name)
-
+        
+        
 def save_each_class(selected_images,name):
 
     # subplot 생성 및 데이터 채우기
@@ -150,6 +153,7 @@ def save_each_class(selected_images,name):
     # 그래프 저장
     plt.tight_layout()
     plt.savefig(f'each_{name}.png')
+    plt.close()
 
 def calculate_weight(train_dataset):
     """
