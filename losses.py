@@ -11,6 +11,29 @@ import logging
 
 NUM_OUTPUTS = 2
 
+class DiceLoss(nn.Module):
+    def __init__(self, ignore_label=-1, weight=None):
+        super(CrossEntropy, self).__init__()
+        self.ignore_label = ignore_label
+        
+        self.weight = weight.to('cuda')
+
+        
+    def _forward(self, score, target):
+        ph, pw = score.size(2), score.size(3)
+        #h, w = target.size(1), target.size(2)
+        h, w = target.size(2), target.size(3)
+        if ph != h or pw != w:
+            #score = F.interpolate(input=score, size=( #메모리 초과로 target를 바꾸기로
+            #    h, w), mode='bilinear', align_corners=True)
+            target = target.to(torch.float)
+            target = F.interpolate(target, size=(ph, pw), mode='bilinear', align_corners=True)
+     
+        smooth = 1.0  # 작은 값 추가하여 0으로 나누기 방지
+        intersection = torch.sum(score * target)
+        union = torch.sum(score) + torch.sum(target)
+        dice = (2.0 * intersection + smooth) / (union + smooth)
+        return 1.0 - dice
 
 class CrossEntropy(nn.Module):
     def __init__(self, ignore_label=-1, weight=None):
