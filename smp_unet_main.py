@@ -110,7 +110,7 @@ def vali(config,model, logger, vali_dataloader,epoch,weight):
             outputs = model(images)
             loss = criterion(outputs, masks)
 
-            iou_list += compute_miou(outputs[1],masks, idx=i, is_validation=True)
+            iou_list += compute_miou(outputs,masks, idx=i, is_validation=True)
             epoch_loss += loss.item()
         
         
