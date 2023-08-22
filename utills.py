@@ -143,7 +143,8 @@ def calculate_weight(train_dataset):
         train_dataset (_type_): _description_
     """
     class_pixel_counts = torch.zeros(26).to('cuda')
-    for i in tqdm(range(1000)):
+    for __ in tqdm(range(100)):
+        i = random.randint(0,len(train_dataset)-1)
         _ , label = train_dataset[i]
         label = torch.tensor(label).to('cuda')
         class_pixel_counts += torch.tensor([torch.sum(label[c]) for c in range(26)]).to('cuda') #각 class별 개수
