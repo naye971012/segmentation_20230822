@@ -107,15 +107,15 @@ def draw_image(pred,mask, is_validation, idx ):
     for i, mask_tensor in enumerate([mask,pred]):
 
         # 클래스별로 이미지 시각화 및 저장
-        class_labels = mask_tensor[0]
+        class_labels = (mask_tensor[0]).cpu().numpy()
 
         # 클래스별로 픽셀 수 계산, label일 경우에만 실행하여 같은 색으로
         if i==0:
-            class_pixel_counts = [torch.sum(class_labels[c] == 1) for c in range(26)]
+            class_pixel_counts = [np.sum(class_labels[c] == 1) for c in range(26)]
         
         # 클래스별로 이미지 생성
         colored_image = np.zeros((1080, 1920, 3), dtype=np.uint8)
-        for color, c in enumerate(torch.argsort(class_pixel_counts)[::-1]):  # 가장 많이 등장한 순서대로 순회
+        for color, c in enumerate(np.argsort(class_pixel_counts)[::-1]):  # 가장 많이 등장한 순서대로 순회
             class_mask = (class_labels[c] == 1)
             class_color = class_colors[color]
             colored_image[class_mask] = class_color
