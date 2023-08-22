@@ -6,7 +6,7 @@ def train(config, model, logger, train_dataloader, vali_dataloader, weight):
     
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
-    criterion = DiceLoss(weight=weight)
+    criterion = CrossEntropy(weight=weight)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=optimizer,
                                         lr_lambda=lambda epoch: 0.9 ** epoch,

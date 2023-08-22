@@ -58,7 +58,7 @@ class CrossEntropy(nn.Module):
         #    ignore_index=ignore_label
         #)
         self.weight = weight.to('cuda')
-        self.pos_weight = 1
+        self.pos_weight = 5
         
     def _forward(self, score, target):
         ph, pw = score.size(2), score.size(3)
