@@ -144,7 +144,7 @@ def calculate_weight(train_dataset):
     class_pixel_counts = torch.zeros(26)
     for i in range(5000):
         _ , label = train_dataset[i]
-        class_pixel_counts += torch.tensor([sum(label[c]) for c in range(26)]) #각 class별 개수
+        class_pixel_counts += torch.tensor([torch.sum(torch.tensor(label[c])) for c in range(26)]) #각 class별 개수
         #10000 100 500 6000
     class_pixel_counts = 1 - class_pixel_counts/torch.sum(class_pixel_counts)
     
