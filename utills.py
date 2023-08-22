@@ -107,22 +107,16 @@ def draw_image(pred,mask, is_validation, idx ):
     for i, mask_tensor in enumerate([mask,pred]):
 
         # 클래스별로 이미지 시각화 및 저장
-        mask_tensor = mask_tensor[0]
-        img = torch.zeros((1080,1920))
-        for c in range(26):
-            img[mask_tensor[c]==1] = c
-
-        # 가상의 클래스마다 0부터 25까지의 숫자로 구성된 이미지 생성 (예시)
-        class_labels = img
+        class_labels = mask_tensor[0]
 
         # 클래스별로 픽셀 수 계산, label일 경우에만 실행하여 같은 색으로
         if i==0:
-            class_pixel_counts = [torch.sum(class_labels == c) for c in range(26)]
+            class_pixel_counts = [torch.sum(class_labels[c] == 1) for c in range(26)]
         
         # 클래스별로 이미지 생성
         colored_image = np.zeros((1080, 1920, 3), dtype=np.uint8)
         for color, c in enumerate(np.argsort(class_pixel_counts)[::-1]):  # 가장 많이 등장한 순서대로 순회
-            class_mask = (class_labels == c)
+            class_mask = (class_labels[c] == 1)
             class_color = class_colors[color]
             colored_image[class_mask] = class_color
 
@@ -135,9 +129,27 @@ def draw_image(pred,mask, is_validation, idx ):
         else:
             prefix = "train_"
         if i==0:
-            plt.savefig(f'{prefix}label_visualization_{idx}.png')  # 이미지 저장
+            name = f'{prefix}label_visualization_{idx}'
+            plt.savefig(f'{name}.png')  # 이미지 저장
+            save_each_class(class_labels,name)
         else:
-            plt.savefig(f'{prefix}pred_visualization_{idx}.png')  # 이미지 저장
+            name = f'{prefix}pred_visualization_{idx}'
+            plt.savefig(f'{name}.png')  # 이미지 저장
+            save_each_class(class_labels,name)
+
+def save_each_class(selected_images,name):
+
+    # subplot 생성 및 데이터 채우기
+    fig, axes = plt.subplots(6, 5, figsize=(12, 12))
+    for i, ax in enumerate(axes.flat):
+        if(i==26):
+            break
+        ax.imshow(selected_images[i], cmap='gray')  # 흑백 이미지로 표시
+        ax.axis('off')  # 축 제거
+
+    # 그래프 저장
+    plt.tight_layout()
+    plt.savefig(f'each_{name}.png')
 
 def calculate_weight(train_dataset):
     """
@@ -158,3 +170,11 @@ def calculate_weight(train_dataset):
     print(f"class weights : {class_pixel_counts}")
     
     return class_pixel_counts
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 랜덤한 [26, 1024, 1024] 크기의 0과 1로 이루어진 텐서 생성 (이 부분은 당신의 데이터로 대체해주세요)
+tensor = np.random.randint(2, size=(26, 1024, 1024))
+
