@@ -59,7 +59,7 @@ if __name__=="__main__":
     
     
     print("calculate class weight...")
-    weight = calculate_weight(train_dataset)
+    #weight = calculate_weight(train_dataset)
     print("done!")
     
     torch.cuda.empty_cache()

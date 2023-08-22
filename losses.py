@@ -16,7 +16,8 @@ class DiceLoss(nn.Module):
         super(DiceLoss, self).__init__()
         self.ignore_label = ignore_label
         
-        self.weight = weight.to('cuda')
+        if weight:
+            self.weight = weight.to('cuda')
 
         
     def _forward(self, score, target):
@@ -34,7 +35,17 @@ class DiceLoss(nn.Module):
         union = torch.sum(score) + torch.sum(target)
         dice = (2.0 * intersection + smooth) / (union + smooth)
         return 1.0 - dice
+    
+    def forward(self, score, target):
 
+        if NUM_OUTPUTS == 1:
+            score = [score]
+        
+        weights = [0.4 , 1.0 ]
+        assert len(weights) == len(score)
+
+        return sum([w * self._forward(x, target) for (w, x) in zip(weights, score)]) # [ 0.4 , 1 ] [a , b], 뒤에거가 진짜 pred, 앞에는 형체예측
+    
 class CrossEntropy(nn.Module):
     def __init__(self, ignore_label=-1, weight=None):
         super(CrossEntropy, self).__init__()
