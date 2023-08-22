@@ -157,6 +157,7 @@ if __name__=="__main__":
     print("\nmodel testing...")
     x = torch.randn((1,3,256,256))
     y = model(x)
+    print(y.size())
     print("model testing done!\n")
     
     temp_transform = A.Compose([
