@@ -13,7 +13,7 @@ NUM_OUTPUTS = 2
 
 class DiceLoss(nn.Module):
     def __init__(self, ignore_label=-1, weight=None):
-        super(CrossEntropy, self).__init__()
+        super(DiceLoss, self).__init__()
         self.ignore_label = ignore_label
         
         self.weight = weight.to('cuda')
