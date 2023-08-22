@@ -658,6 +658,7 @@ class HighResolutionNet(nn.Module):
             elif isinstance(m, BatchNorm2d_class):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
+        """
         if os.path.isfile(pretrained):
             pretrained_dict = torch.load(pretrained, map_location={'cuda:0': 'cpu'})
             logger.info('=> loading pretrained model {}'.format(pretrained))
@@ -674,7 +675,7 @@ class HighResolutionNet(nn.Module):
             self.load_state_dict(model_dict)
         elif pretrained:
             raise RuntimeError('No such file {}'.format(pretrained))
-
+        """
 
 def get_seg_model(cfg, **kwargs):
     model = HighResolutionNet(cfg, **kwargs)
