@@ -64,7 +64,7 @@ if __name__=="__main__":
     
     torch.cuda.empty_cache()
     print("train start!\n\n")
-    train(config,model,logger, train_dataloader,vali_dataloader,weight)
+    train(config,model,logger, train_dataloader,vali_dataloader,weight=1)
     
     
     
