@@ -31,7 +31,11 @@ class CrossEntropy(nn.Module):
         
     def forward(self, score, target):
         
-        print(score.size(),target.size())
+        ph, pw = score.size(2), score.size(3)
+        h, w = target.size(2), target.size(3)
+        if ph != h or pw != w:
+            target = target.to(torch.float)
+            target = F.interpolate(target, size=(ph, pw), mode='bilinear', align_corners=True)
         
         ce_loss = - self.pos_weight * target * torch.log(torch.sigmoid(score) + 1e-8 ) - (1 - target) * torch.log(1 - torch.sigmoid(score) + 1e-8)
         
