@@ -30,7 +30,9 @@ class CrossEntropy(nn.Module):
         self.pos_weight = 1
         
     def forward(self, score, target):
-
+        
+        print(score.size(),target.size())
+        
         ce_loss = - self.pos_weight * target * torch.log(torch.sigmoid(score) + 1e-8 ) - (1 - target) * torch.log(1 - torch.sigmoid(score) + 1e-8)
         
         #weight = self.weight.view( 1, self.weight.size(0), 1, 1)
